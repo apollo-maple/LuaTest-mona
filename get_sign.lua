@@ -18,8 +18,8 @@ if get_code == 200 then
 
     get_decoded_json = cjson.decode(table.concat(response_body))
     for key, val in pairs( get_decoded_json["rawtransaction"] ) do
-        if key == "false" then
-            sign_ret, sign_value = coind.signrawtransaction(val)
+        if val["signed"] == "false" then
+            sign_ret, sign_value = coind.signrawtransaction(val["hex"])
         end
         if sign_ret == true then
             print "---  succeeded in signing  ---"
