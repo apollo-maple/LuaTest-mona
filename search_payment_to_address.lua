@@ -1,3 +1,6 @@
+--特定のアドレスに対する入金を監視する
+--watch payments into spcific address
+
 local address = "YOUR_ADDRESS"
 
 function SearchTransaction(txid)
