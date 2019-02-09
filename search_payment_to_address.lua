@@ -6,12 +6,13 @@ local address = "YOUR_ADDRESS"
 function SearchTransaction(txid)
     tx_ret, tx_value = coind.getrawtransaction(txid,true)
     result = {}
-
-    if tx_ret == true then
-        for j, tx_val in pairs(tx_value["vout"]) do
-            if tx_val["scriptPubKey"]["addresses"][0] == address then
-                table.insert(result,{mona_val=tx_val["value"],n_conf=tx_value["confirmations"]})
-            end
+    
+    if tx_ret ~= true then
+        return
+    end
+    for j, tx_val in pairs(tx_value["vout"]) do
+        if tx_val["scriptPubKey"]["addresses"][0] == address then
+            table.insert(result,{mona_val=tx_val["value"],n_conf=tx_value["confirmations"]})
         end
     end
     return result
@@ -26,13 +27,13 @@ function OnBlockNotify(initioalsync, hash)
         return
     end
     block_ret, block_value = coind.getblock(hash)
-
-    if block_ret == true then
-        for i, block_val in pairs(block_value["tx"]) do
-            result = SearchTransaction(block_val)
-            for j, table in pairs(result) do
-                print (string.format("new tx has entered into block! %f MONA.", table["mona_val"]))
-            end
+    if block_ret ~= true then
+        return
+    end
+    for i, block_val in pairs(block_value["tx"]) do
+        result = SearchTransaction(block_val)
+        for j, table in pairs(result) do
+            print (string.format("new tx has entered into block! %f MONA.", table["mona_val"]))
         end
     end
 end
