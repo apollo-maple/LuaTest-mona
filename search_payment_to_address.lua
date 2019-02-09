@@ -9,7 +9,7 @@ function SearchTransaction(txid)
 
     if tx_ret == true then
         for j, tx_val in pairs(tx_value["vout"]) do
-            if (tx_val["scriptPubKey"]["addresses"][0] == address) then
+            if tx_val["scriptPubKey"]["addresses"][0] == address then
                 table.insert(result,{mona_val=tx_val["value"],n_conf=tx_value["confirmations"]})
             end
         end
@@ -18,10 +18,13 @@ function SearchTransaction(txid)
 end
 
 function OnInit()
-    print ("search_payment_to_address loaded !!")
+    print "search_payment_to_address loaded !!"
 end
 
 function OnBlockNotify(initioalsync, hash)
+    if initialsync == true then
+        return
+    end
     block_ret, block_value = coind.getblock(hash)
 
     if block_ret == true then
@@ -37,10 +40,10 @@ end
 function OnWalletNotify(txid)
     result = SearchTransaction(txid)
     for i, table in pairs(result) do
-        if (table["n_conf"]==nil) then
+        if table["n_conf"]==nil then
                 print (string.format("new transaction! %f MONA.",  table["mona_val"]))
         end
-        if (table["n_conf"]==1) then
+        if table["n_conf"]==1 then
                 print (string.format("1 confirmation! %f MONA.", table["mona_val"]))
         end
     end
