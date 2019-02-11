@@ -3,6 +3,8 @@
 
 local address = "YOUR_ADDRESS"
 
+--txidを受け取ったトランザクションの中にaddress宛のtxoutがあればtableにそのモナの量と承認数を入れて返す関数
+--If there are txouts for address in received txid's transaction, return table containing mona value and confirmation number.
 function SearchTransaction(txid)
     tx_ret, tx_value = coind.getrawtransaction(txid,true)
     result = {}
@@ -10,7 +12,7 @@ function SearchTransaction(txid)
     if tx_ret ~= true then
         return
     end
-    for j, tx_val in pairs(tx_value["vout"]) do
+    for i, tx_val in pairs(tx_value["vout"]) do
         if tx_val["scriptPubKey"]["addresses"][0] == address then
             table.insert(result,{mona_val=tx_val["value"],n_conf=tx_value["confirmations"]})
         end
